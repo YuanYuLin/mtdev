@@ -48,22 +48,11 @@ def MAIN_ENV(args):
     ops.exportEnv(ops.setEnv("PKG_CONFIG_LIBDIR", ops.path_join(iopc.getSdkPath(), "pkgconfig")))
     ops.exportEnv(ops.setEnv("PKG_CONFIG_SYSROOT_DIR", iopc.getSdkPath()))
 
-    cc_sysroot = ops.getEnv("CC_SYSROOT")
-    cflags = ""
-    cflags += " -I" + ops.path_join(cc_sysroot, 'usr/include')
-    #cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/libexpat')
-
-    ldflags = ""
-    ldflags += " -L" + ops.path_join(cc_sysroot, 'lib')
-    ldflags += " -L" + ops.path_join(cc_sysroot, 'usr/lib')
-    ldflags += " -L" + ops.path_join(iopc.getSdkPath(), 'lib')
-
-    libs = ""
-    libs += " -lffi -lxml2 -lexpat"
+    '''
     ops.exportEnv(ops.setEnv("LDFLAGS", ldflags))
     ops.exportEnv(ops.setEnv("CFLAGS", cflags))
     ops.exportEnv(ops.setEnv("LIBS", libs))
-
+    '''
     return False
 
 def MAIN_EXTRACT(args):
@@ -119,6 +108,20 @@ def MAIN_INSTALL(args):
 
     iopc.installBin(args["pkg_name"], ops.path_join(ops.path_join(install_dir, "lib"), "."), "lib")
     iopc.installBin(args["pkg_name"], ops.path_join(tmp_include_dir, "."), dst_include_dir)
+
+    return False
+
+
+def MAIN_SDKENV(args):
+    set_global(args)
+
+    cflags = ""
+    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/' + args["pkg_name"])
+    iopc.add_includes(cflags)
+
+    libs = ""
+    libs += " -lmtdev"
+    iopc.add_libs(libs)
 
     return False
 
